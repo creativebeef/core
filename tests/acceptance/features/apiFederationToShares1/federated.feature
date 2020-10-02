@@ -3,8 +3,12 @@ Feature: federated
 
   Background:
     Given using server "REMOTE"
+    And the administrator has set the default folder for received shares to "Shares"
+    And auto-accept shares has been disabled
     And user "Alice" has been created with default attributes and skeleton files
     And using server "LOCAL"
+    And the administrator has set the default folder for received shares to "Shares"
+    And auto-accept shares has been disabled
     And user "Brian" has been created with default attributes and skeleton files
 
   @smokeTest
@@ -95,7 +99,7 @@ Feature: federated
       | name        | /textfile0.txt           |
       | owner       | %username%               |
       | user        | %username%               |
-      | mountpoint  | /textfile0 (2).txt       |
+      | mountpoint  | /Shares/textfile0.txt    |
       | accepted    | 1                        |
       | type        | file                     |
       | permissions | share,read,update,delete |
@@ -164,7 +168,7 @@ Feature: federated
     And user "Carol" has been created with default attributes and skeleton files
     And using OCS API version "<ocs-api-version>"
     When user "Brian" creates a share using the sharing API with settings
-      | path        | /textfile0 (2).txt |
+      | path        | /Shares/textfile0.txt |
       | shareType   | user               |
       | shareWith   | Carol              |
       | permissions | share,read,update  |
@@ -176,7 +180,7 @@ Feature: federated
       | item_source            | A_STRING           |
       | share_type             | user               |
       | file_source            | A_STRING           |
-      | path                   | /textfile0 (2).txt |
+      | path                   | /Shares/textfile0.txt |
       | permissions            | share,read,update  |
       | stime                  | A_NUMBER           |
       | storage                | A_STRING           |
@@ -195,7 +199,7 @@ Feature: federated
     And user "Alice" from server "REMOTE" has accepted the last pending share
     And using server "REMOTE"
     And using OCS API version "<ocs-api-version>"
-    When user "Alice" uploads file "filesForUpload/file_to_overwrite.txt" to "/textfile0 (2).txt" using the WebDAV API
+    When user "Alice" uploads file "filesForUpload/file_to_overwrite.txt" to "/Shares/textfile0.txt" using the WebDAV API
     Then the HTTP status code should be "204"
     And the content of file "/textfile0.txt" for user "Brian" on server "LOCAL" should be "BLABLABLA" plus end-of-line
     Examples:
@@ -207,7 +211,7 @@ Feature: federated
     Given user "Alice" from server "REMOTE" has shared "/textfile0.txt" with user "Brian" from server "LOCAL"
     And user "Brian" from server "LOCAL" has accepted the last pending share
     And using OCS API version "<ocs-api-version>"
-    When user "Brian" uploads file "filesForUpload/file_to_overwrite.txt" to "/textfile0 (2).txt" using the WebDAV API
+    When user "Brian" uploads file "filesForUpload/file_to_overwrite.txt" to "/Shares/textfile0.txt" using the WebDAV API
     Then the HTTP status code should be "204"
     And the content of file "/textfile0.txt" for user "Alice" on server "REMOTE" should be "BLABLABLA" plus end-of-line
     Examples:
@@ -220,7 +224,7 @@ Feature: federated
     And user "Alice" from server "REMOTE" has accepted the last pending share
     And using server "REMOTE"
     And using OCS API version "<ocs-api-version>"
-    When user "Alice" uploads file "filesForUpload/file_to_overwrite.txt" to "/PARENT (2)/textfile0.txt" using the WebDAV API
+    When user "Alice" uploads file "filesForUpload/file_to_overwrite.txt" to "/Shares/PARENT/textfile0.txt" using the WebDAV API
     Then the HTTP status code should be "201"
     And the content of file "/PARENT/textfile0.txt" for user "Brian" on server "LOCAL" should be "BLABLABLA" plus end-of-line
     Examples:
@@ -232,7 +236,7 @@ Feature: federated
     Given user "Alice" from server "REMOTE" has shared "/PARENT" with user "Brian" from server "LOCAL"
     And user "Brian" from server "LOCAL" has accepted the last pending share
     And using OCS API version "<ocs-api-version>"
-    When user "Brian" uploads file "filesForUpload/file_to_overwrite.txt" to "/PARENT (2)/textfile0.txt" using the WebDAV API
+    When user "Brian" uploads file "filesForUpload/file_to_overwrite.txt" to "/Shares/PARENT/textfile0.txt" using the WebDAV API
     Then the HTTP status code should be "201"
     And the content of file "/PARENT/textfile0.txt" for user "Alice" on server "REMOTE" should be "BLABLABLA" plus end-of-line
     Examples:
@@ -244,13 +248,13 @@ Feature: federated
     Given user "Alice" from server "REMOTE" has shared "/textfile0.txt" with user "Brian" from server "LOCAL"
     And user "Brian" from server "LOCAL" has accepted the last pending share
     And using OCS API version "<ocs-api-version>"
-    When user "Brian" uploads the following "3" chunks to "/textfile0 (2).txt" with old chunking and using the WebDAV API
+    When user "Brian" uploads the following "3" chunks to "/Shares/textfile0.txt" with old chunking and using the WebDAV API
       | number | content |
       | 1      | AAAAA   |
       | 2      | BBBBB   |
       | 3      | CCCCC   |
     Then the HTTP status code should be "201"
-    And the content of file "/textfile0 (2).txt" for user "Brian" should be "AAAAABBBBBCCCCC"
+    And the content of file "/Shares/textfile0.txt" for user "Brian" should be "AAAAABBBBBCCCCC"
     And the content of file "/textfile0.txt" for user "Alice" on server "REMOTE" should be "AAAAABBBBBCCCCC"
     Examples:
       | ocs-api-version | ocs-status |
@@ -261,13 +265,13 @@ Feature: federated
     Given user "Alice" from server "REMOTE" has shared "/PARENT" with user "Brian" from server "LOCAL"
     And user "Brian" from server "LOCAL" has accepted the last pending share
     And using OCS API version "<ocs-api-version>"
-    When user "Brian" uploads the following "3" chunks to "/PARENT (2)/textfile0.txt" with old chunking and using the WebDAV API
+    When user "Brian" uploads the following "3" chunks to "/Shares/PARENT/textfile0.txt" with old chunking and using the WebDAV API
       | number | content |
       | 1      | AAAAA   |
       | 2      | BBBBB   |
       | 3      | CCCCC   |
     Then the HTTP status code should be "201"
-    And the content of file "/PARENT (2)/textfile0.txt" for user "Brian" should be "AAAAABBBBBCCCCC"
+    And the content of file "/Shares/PARENT/textfile0.txt" for user "Brian" should be "AAAAABBBBBCCCCC"
     And the content of file "/PARENT/textfile0.txt" for user "Alice" on server "REMOTE" should be "AAAAABBBBBCCCCC"
     Examples:
       | ocs-api-version | ocs-status |
@@ -282,7 +286,7 @@ Feature: federated
     Then the OCS status code should be "<ocs-status>"
     And the HTTP status code should be "200"
     And user "Brian" should not see the following elements
-      | /textfile0%20(2).txt |
+      | /Shares/textfile0.txt |
     When user "Brian" gets the list of federated cloud shares using the sharing API
     Then the response should contain 0 entries
     When user "Brian" gets the list of pending federated cloud shares using the sharing API
@@ -301,7 +305,7 @@ Feature: federated
     Then the OCS status code should be "997"
     And the HTTP status code should be "401"
     And user "Brian" should see the following elements
-      | /textfile0%20(2).txt |
+      | /shares/textfile0.txt |
     When user "Brian" gets the list of federated cloud shares using the sharing API
     Then the fields of the last response about user "Alice" sharing with user "Brian" should include
       | id          | A_STRING                 |
@@ -311,7 +315,7 @@ Feature: federated
       | name        | /textfile0.txt           |
       | owner       | %username%               |
       | user        | %username%               |
-      | mountpoint  | /textfile0 (2).txt       |
+      | mountpoint  | /Shares/textfile0.txt    |
       | accepted    | 1                        |
       | type        | file                     |
       | permissions | share,delete,update,read |
@@ -329,7 +333,7 @@ Feature: federated
     Then the OCS status code should be "<ocs-status>"
     And the HTTP status code should be "200"
     And user "Brian" should not see the following elements
-      | /textfile0%20(2).txt |
+      | /Shares/textfile0.txt |
     When user "Brian" gets the list of federated cloud shares using the sharing API
     Then the response should contain 0 entries
     When user "Brian" gets the list of pending federated cloud shares using the sharing API
@@ -347,7 +351,7 @@ Feature: federated
     Then the OCS status code should be "997"
     And the HTTP status code should be "401"
     And user "Brian" should not see the following elements
-      | /textfile0%20(2).txt |
+      | /Shares/textfile0.txt |
     When user "Brian" gets the list of pending federated cloud shares using the sharing API
     Then the fields of the last response about user "Alice" sharing with user "Brian" should include
       | id          | A_STRING                                   |
@@ -382,7 +386,7 @@ Feature: federated
     Given user "Alice" from server "REMOTE" has shared "/PARENT" with user "Brian" from server "LOCAL"
     And user "Brian" from server "LOCAL" has accepted the last pending share
     And using server "LOCAL"
-    When user "Brian" uploads file "filesForUpload/textfile.txt" to filenames based on "/PARENT (2)/testquota.txt" with all mechanisms using the WebDAV API
+    When user "Brian" uploads file "filesForUpload/textfile.txt" to filenames based on "/Shares/PARENT/testquota.txt" with all mechanisms using the WebDAV API
     Then the HTTP status code of all upload responses should be "201"
     And as user "Alice" on server "REMOTE" the files uploaded to "/PARENT/testquota.txt" with all mechanisms should exist
 
@@ -393,7 +397,7 @@ Feature: federated
     And user "Brian" from server "LOCAL" has shared "/PARENT" with user "Alice" from server "REMOTE"
     And user "Alice" from server "REMOTE" has accepted the last pending share
     And using server "REMOTE"
-    When user "Alice" uploads file "filesForUpload/textfile.txt" to filenames based on "/PARENT (2)/testquota.txt" with all mechanisms using the WebDAV API
+    When user "Alice" uploads file "filesForUpload/textfile.txt" to filenames based on "/Shares/PARENT/testquota.txt" with all mechanisms using the WebDAV API
     Then the HTTP status code of all upload responses should be "507"
 
   @skipOnLDAP
@@ -403,7 +407,7 @@ Feature: federated
     And user "Alice" from server "REMOTE" has shared "/PARENT" with user "Brian" from server "LOCAL"
     And user "Brian" from server "LOCAL" has accepted the last pending share
     And using server "LOCAL"
-    When user "Brian" uploads file "filesForUpload/textfile.txt" to filenames based on "/PARENT (2)/testquota.txt" with all mechanisms using the WebDAV API
+    When user "Brian" uploads file "filesForUpload/textfile.txt" to filenames based on "/Shares/PARENT/testquota.txt" with all mechanisms using the WebDAV API
     Then the HTTP status code of all upload responses should be "507"
 
   Scenario Outline: share of a folder to a remote user who already has a folder with the same name
@@ -425,11 +429,11 @@ Feature: federated
       | name        | /zzzfolder     |
       | owner       | %username%     |
       | user        | %username%     |
-      | mountpoint  | /zzzfolder (2) |
+      | mountpoint  | /Shares/zzzfolder |
       | type        | dir            |
       | permissions | all            |
     And as "Brian" folder "zzzfolder/Brian" should exist
-    And as "Brian" folder "zzzfolder (2)/Alice" should exist
+    And as "Brian" folder "Shares/zzzfolder/Alice" should exist
     Examples:
       | ocs-api-version | ocs-status |
       | 1               | 100        |
@@ -454,12 +458,12 @@ Feature: federated
       | name        | /randomfile.txt          |
       | owner       | %username%               |
       | user        | %username%               |
-      | mountpoint  | /randomfile (2).txt      |
+      | mountpoint  | /Shares/randomfile.txt   |
       | accepted    | 1                        |
       | type        | file                     |
       | permissions | share,delete,update,read |
     And the content of file "/randomfile.txt" for user "Brian" on server "LOCAL" should be "local content"
-    And the content of file "/randomfile (2).txt" for user "Brian" on server "LOCAL" should be "remote content"
+    And the content of file "/Shares/randomfile.txt" for user "Brian" on server "LOCAL" should be "remote content"
     Examples:
       | ocs-api-version | ocs-status |
       | 1               | 100        |
@@ -481,12 +485,14 @@ Feature: federated
     And user "Alice" from server "REMOTE" shares "randomfile.txt" with user "Carol" from server "LOCAL" using the sharing API
     And user "Carol" from server "LOCAL" accepts the last pending share using the sharing API
     And user "Brian" shares folder "zzzfolder" with user "Carol" using the sharing API
+    And user "Carol" accepts share "/zzzfolder" offered by user "Brian" using the sharing API
     And user "Brian" shares folder "randomfile.txt" with user "Carol" using the sharing API
+    And user "Carol" accepts share "/randomfile.txt" offered by user "Brian" using the sharing API
     # local shares are taking priority at the moment
-    Then as "Carol" folder "zzzfolder (2)/remote" should exist
-    And as "Carol" folder "zzzfolder/local" should exist
-    And the content of file "/randomfile (2).txt" for user "Carol" on server "LOCAL" should be "remote content"
-    And the content of file "/randomfile.txt" for user "Carol" on server "LOCAL" should be "local content"
+    Then as "Carol" folder "/Shares/zzzfolder/remote" should exist
+    And as "Carol" folder "/Shares/zzzfolder (2)/local" should exist
+    And the content of file "/Shares/randomfile.txt" for user "Carol" on server "LOCAL" should be "remote content"
+    And the content of file "/Shares/randomfile (2).txt" for user "Carol" on server "LOCAL" should be "local content"
 
   Scenario: receive a remote share that has the same name as a previously received local share
     Given using server "REMOTE"
@@ -499,12 +505,14 @@ Feature: federated
     And user "Brian" has created folder "zzzfolder/local"
     And user "Brian" has uploaded file with content "local content" to "/randomfile.txt"
     When user "Brian" shares folder "zzzfolder" with user "Carol" using the sharing API
+    And user "Carol" accepts share "/zzzfolder" offered by user "Brian" using the sharing API
     And user "Brian" shares folder "randomfile.txt" with user "Carol" using the sharing API
+    And user "Carol" accepts share "/randomfile.txt" offered by user "Brian" using the sharing API
     And user "Alice" from server "REMOTE" shares "zzzfolder" with user "Carol" from server "LOCAL" using the sharing API
     And user "Carol" from server "LOCAL" accepts the last pending share using the sharing API
     And user "Alice" from server "REMOTE" shares "randomfile.txt" with user "Carol" from server "LOCAL" using the sharing API
     And user "Carol" from server "LOCAL" accepts the last pending share using the sharing API
-    Then as "Carol" folder "zzzfolder/local" should exist
-    And as "Carol" folder "zzzfolder (2)/remote" should exist
-    And the content of file "/randomfile.txt" for user "Carol" on server "LOCAL" should be "local content"
-    And the content of file "/randomfile (2).txt" for user "Carol" on server "LOCAL" should be "remote content"
+    Then as "Carol" folder "Shares/zzzfolder/local" should exist
+    And as "Carol" folder "Shares/zzzfolder (2)/remote" should exist
+    And the content of file "/Shares/randomfile.txt" for user "Carol" on server "LOCAL" should be "local content"
+    And the content of file "/Shares/randomfile (2).txt" for user "Carol" on server "LOCAL" should be "remote content"
