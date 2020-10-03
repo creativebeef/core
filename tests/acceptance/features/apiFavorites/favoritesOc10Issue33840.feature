@@ -1,4 +1,4 @@
-@api @skipOnOcV10 @notToImplementOnOCIS @issue-33840
+@api @skipOnOcV10 @notToImplementOnOCIS
 Feature: favorite
 
   Background:
@@ -13,8 +13,7 @@ Feature: favorite
     And user "Alice" has created folder "/PARENT"
     And user "Alice" has uploaded file with content "some data" to "/PARENT/parent.txt"
 
-#  @toImplementOnOCIS
-    @issue-ocis-reva-39
+  @issue-33840 @issue-ocis-reva-39
   Scenario Outline: Get favorited elements and limit count of entries
     Given using <dav_version> DAV path
     And user "Alice" has favorited element "/textfile0.txt"
@@ -34,8 +33,7 @@ Feature: favorite
       | old         |
       | new         |
 
-#   @toImplementOnOCIS
-    @issue-ocis-reva-39
+  @issue-33840 @issue-ocis-reva-39
   Scenario Outline: Get favorited elements paginated in subfolder
     Given using <dav_version> DAV path
     And user "Alice" has created folder "/subfolder"
