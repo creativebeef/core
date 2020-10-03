@@ -1,4 +1,5 @@
-@api @federation-app-required @files_sharing-app-required @skipOnOcV10 @notToImplementOnOCIS
+@api @federation-app-required @files_sharing-app-required
+@skipOnOcV10 @notToImplementOnOCIS
 Feature: federated
 
   Background:
@@ -63,26 +64,3 @@ Feature: federated
       | ocs-api-version |
       | 1               |
       | 2               |
-
-  @issue-35154
-  Scenario: receive a local share that has the same name as a previously received remote share
-    Given using server "REMOTE"
-    And user "Alice" has created folder "/zzzfolder"
-    And user "Alice" has created folder "zzzfolder/remote"
-    And user "Alice" has uploaded file with content "remote content" to "/randomfile.txt"
-    And using server "LOCAL"
-    And user "Carol" has been created with default attributes and skeleton files
-    And user "Brian" has created folder "/zzzfolder"
-    And user "Brian" has created folder "zzzfolder/local"
-    And user "Brian" has uploaded file with content "local content" to "/randomfile.txt"
-    When user "Alice" from server "REMOTE" shares "zzzfolder" with user "Carol" from server "LOCAL" using the sharing API
-    And user "Carol" from server "LOCAL" accepts the last pending share using the sharing API
-    And user "Alice" from server "REMOTE" shares "randomfile.txt" with user "Carol" from server "LOCAL" using the sharing API
-    And user "Carol" from server "LOCAL" accepts the last pending share using the sharing API
-    And user "Brian" shares folder "zzzfolder" with user "Carol" using the sharing API
-    And user "Brian" shares folder "randomfile.txt" with user "Carol" using the sharing API
-    # local shares are taking priority at the moment
-    Then as "Carol" folder "zzzfolder (2)/remote" should exist
-    And as "Carol" folder "zzzfolder/local" should exist
-    And the content of file "/randomfile (2).txt" for user "Carol" on server "LOCAL" should be "remote content"
-    And the content of file "/randomfile.txt" for user "Carol" on server "LOCAL" should be "local content"
