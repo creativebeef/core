@@ -1,4 +1,5 @@
-@api @files_sharing-app-required @notToImplementOnOCIS
+@api @files_sharing-app-required
+@skipOnOcV10 @notToImplementOnOCIS @issue-37883
 Feature: accept/decline shares coming from internal users to the Shares folder
   As a user
   I want to have control of which received shares I accept
@@ -12,6 +13,7 @@ Feature: accept/decline shares coming from internal users to the Shares folder
       | Alice    |
       | Brian    |
 
+  @issue-37883
   Scenario: When accepting a share of a file, the response has valid fields
     # When fixing this issue on oC10, delete this scenario and enable the scenario in acceptSharesToSharesFolder
     Given the administrator has set the default folder for received shares to "Shares"
@@ -23,7 +25,7 @@ Feature: accept/decline shares coming from internal users to the Shares folder
     And the fields of the last response to user "Alice" sharing with user "Brian" should include
       | share_with             | %username%                   |
       | share_with_displayname | %displayname%                |
-      | file_target            | /Shares/Shares/textfile0.txt |
+      | file_target            | /Shares/textfile0.txt |
       | path                   | /Shares/textfile0.txt        |
       | permissions            | share,read,update            |
       | uid_owner              | %username%                   |
@@ -34,6 +36,7 @@ Feature: accept/decline shares coming from internal users to the Shares folder
       | share_type             | user                         |
     And the content of file "/Shares/textfile0.txt" for user "Brian" should be "ownCloud test text file 0" plus end-of-line
 
+  @issue-37883
   Scenario: When accepting a share of a folder, the response has valid fields
     # When fixing this issue on oC10, delete this scenario and enable the scenario in acceptSharesToSharesFolder
     Given the administrator has set the default folder for received shares to "Shares"
@@ -45,7 +48,7 @@ Feature: accept/decline shares coming from internal users to the Shares folder
     And the fields of the last response to user "Alice" sharing with user "Brian" should include
       | share_with             | %username%            |
       | share_with_displayname | %displayname%         |
-      | file_target            | /Shares/Shares/PARENT |
+      | file_target            | /Shares/PARENT |
       | path                   | /Shares/PARENT        |
       | permissions            | all                   |
       | uid_owner              | %username%            |

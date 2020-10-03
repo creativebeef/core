@@ -24,27 +24,27 @@ Feature: accept/decline shares coming from internal users to the Shares folder
     When user "Brian" accepts share "/PARENT" offered by user "Alice" using the sharing API
     Then the content of file "/Shares/PARENT/parent.txt" for user "Brian" should be "ownCloud test text file parent" plus end-of-line
 
-  @skipOnOcV10 @issue-37883
+  @issue-37883
   Scenario: When accepting a share of a file, the response is valid
     Given user "Alice" has shared file "/textfile0.txt" with user "Brian"
     When user "Brian" accepts share "/textfile0.txt" offered by user "Alice" using the sharing API
     Then the OCS status code should be "100"
     And the HTTP status code should be "200"
     And the fields of the last response to user "Alice" sharing with user "Brian" should include
-      | share_with             | %username%            |
-      | share_with_displayname | %displayname%         |
-      | file_target            | /Shares/textfile0.txt |
-      | path                   | /Shares/textfile0.txt |
-      | permissions            | share,read,update     |
-      | uid_owner              | %username%            |
-      | displayname_owner      | %displayname%         |
-      | item_type              | file                  |
-      | mimetype               | text/plain            |
-      | storage_id             | ANY_VALUE             |
-      | share_type             | user                  |
+      | share_with             | %username%                   |
+      | share_with_displayname | %displayname%                |
+      | file_target            | /Shares/Shares/textfile0.txt |
+      | path                   | /Shares/textfile0.txt        |
+      | permissions            | share,read,update            |
+      | uid_owner              | %username%                   |
+      | displayname_owner      | %displayname%                |
+      | item_type              | file                         |
+      | mimetype               | text/plain                   |
+      | storage_id             | ANY_VALUE                    |
+      | share_type             | user                         |
     And the content of file "/Shares/textfile0.txt" for user "Brian" should be "ownCloud test text file 0" plus end-of-line
 
-  @skipOnOcV10 @issue-37883
+  @issue-37883
   Scenario: When accepting a share of a folder, the response is valid
     Given user "Alice" has shared file "/PARENT" with user "Brian"
     When user "Brian" accepts share "/PARENT" offered by user "Alice" using the sharing API
@@ -53,7 +53,7 @@ Feature: accept/decline shares coming from internal users to the Shares folder
     And the fields of the last response to user "Alice" sharing with user "Brian" should include
       | share_with             | %username%           |
       | share_with_displayname | %displayname%        |
-      | file_target            | /Shares/PARENT       |
+      | file_target            | /Shares/Shares/PARENT       |
       | path                   | /Shares/PARENT       |
       | permissions            | all                  |
       | uid_owner              | %username%           |
