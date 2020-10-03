@@ -1,12 +1,11 @@
-@api @local_storage @skipOnOcV10 @notToImplementOnOCIS @issue-37723
+@api @local_storage @skipOnOcV10 @notToImplementOnOCIS
 Feature: external-storage
 
-  Background:
+  @issue-37723
+  Scenario: Download a file that exists in filecache but not storage fails with 404
     Given using OCS API version "1"
     And using old DAV path
-
-  Scenario: Download a file that exists in filecache but not storage fails with 404
-    Given user "Alice" has been created with default attributes and skeleton files
+    And user "Alice" has been created with default attributes and skeleton files
     And user "Alice" has created folder "/local_storage/foo3"
     And user "Alice" has moved file "/textfile0.txt" to "/local_storage/foo3/textfile0.txt"
     And file "foo3/textfile0.txt" has been deleted from local storage on the server
